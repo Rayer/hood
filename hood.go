@@ -37,20 +37,8 @@ func PrintConfidentialData(binding interface{}) (string, error) {
 				}
 			}
 
-			ret := ""
-
 			value := valueField.String()
-			if len(value) < keepFirst && len(value) < keepTail {
-				ret = value
-			} else {
-				for i := 0; i < len(value); i++ {
-					if i < keepFirst || i >= len(value)-keepTail {
-						ret += string(value[i])
-					} else {
-						ret += "*"
-					}
-				}
-			}
+			ret := HoodString(value, keepFirst, keepTail)
 
 			kvString = append(kvString, fmt.Sprintf("%v:%v", field.Name, ret))
 
@@ -69,4 +57,20 @@ func PrintConfidentialData(binding interface{}) (string, error) {
 	}
 
 	return "{" + strings.Join(kvString, " ") + "}", nil
+}
+
+func HoodString(target string, keepFirst, keepTail int) string {
+	ret := ""
+	if len(target) < keepFirst && len(target) < keepTail {
+		ret = target
+	} else {
+		for i := 0; i < len(target); i++ {
+			if i < keepFirst || i >= len(target)-keepTail {
+				ret += string(target[i])
+			} else {
+				ret += "*"
+			}
+		}
+	}
+	return ret
 }

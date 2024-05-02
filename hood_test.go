@@ -136,3 +136,40 @@ func TestPrintConfidentialData(t *testing.T) {
 		})
 	}
 }
+
+func TestHoodString(t *testing.T) {
+	type args struct {
+		target    string
+		keepFirst int
+		keepTail  int
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "happy path",
+			args: args{
+				target:    "TestString",
+				keepFirst: 2,
+				keepTail:  2,
+			},
+			want: "Actual   :Te******ng",
+		},
+		{
+			name: "keepFirst > len(target)",
+			args: args{
+				target:    "TestString",
+				keepFirst: 20,
+				keepTail:  2,
+			},
+			want: "TestString",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equalf(t, tt.want, HoodString(tt.args.target, tt.args.keepFirst, tt.args.keepTail), "HoodString(%v, %v, %v)", tt.args.target, tt.args.keepFirst, tt.args.keepTail)
+		})
+	}
+}
